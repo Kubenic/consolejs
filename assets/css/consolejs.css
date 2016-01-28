@@ -1,1 +1,23 @@
 body{background:#ff0000;}
+
+.consolejs-main {
+	background:#fff;
+}
+
+.consolejs-resizeButton{
+	background: #000;
+	position: absolute;
+	bottom: 0;
+	right:0;
+	width: 15px;
+	height: 15px;
+	z-index:999;
+	cursor: nwse-resize;
+}
+
+.consolejs-moveZone{
+	background: #000;
+	width: 100%;
+	height: 10px;
+	cursor: move;
+}
