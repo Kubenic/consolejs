@@ -2,11 +2,40 @@ var  consoleJS;
 
 consoleJS = (function(){
     var boundingRect,
+        debounce,
         display,
         displayUI,
         domElement = {},
+        drag,
         queryElement = {},
+        move,
+        triggers = {
+            start : {
+                resizing : false,
+                moving : false,
+            },
+        },
         userData;
+
+    debounce = function (fx, delay, immediate){
+    var that = this,
+        timeout;
+
+     return function debounced(){
+        var context = this, arg = arguments;
+
+        var later = function(){
+            timeout = null;
+            if (!immediate) fx.apply(context, arg);
+        };
+
+        var callNow = immediate &&  !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, delay);
+        if (callNow) fx.apply(context, arg);
+     };
+
+}
 
     displayUI = function(){
         domElement.userInterface = {};
@@ -56,10 +85,60 @@ consoleJS = (function(){
         queryElement.main.style.right = boundingRect.right +"px";
         queryElement.main.style.top = boundingRect.top +"px";
         queryElement.main.style.bottom = boundingRect.bottom +"px";
+
+        queryElement.resizeButton = document.querySelector('.consolejs-resizeButton');
+        queryElement.resizeButton.addEventListener('mousedown',function(e){
+                e.preventDefault();
+            if(typeof(triggers) !== 'undefined' && !triggers.start.resizing){
+                window.addEventListener('mousemove',drag,false);
+                triggers.start.resizing = true;
+
+                window.addEventListener('mouseup',function(e){
+                        console.log('MOUSE UP');
+                     window.removeEventListener('mousemove',drag,false);
+                     triggers.start.resizing = false;
+                },false);
+            }
+        },false);
+
+        queryElement.moveZone = document.querySelector('.consolejs-moveZone');
+        queryElement.moveZone.addEventListener('mousedown',function(e){
+                e.preventDefault();
+            if(typeof(triggers) !== 'undefined' && !triggers.start.moving){
+                window.addEventListener('mousemove',move,false);
+                triggers.start.moving = true;
+
+                window.addEventListener('mouseup',function(e){
+                        console.log('MOUSE UP');
+                     window.removeEventListener('mousemove',move,false);
+                     triggers.start.moving = false;
+                },false);
+            }
+        },false);
+        
+        
         domElement.userInterface.displayed = true;
         
     }
 
+    move = function(e){
+        console.log(e);
+    };
+    drag = function(e){
+            console.log("H = " +queryElement.main.style.height);
+            console.log("W = " +queryElement.main.style.width);
+        if(parseFloat(queryElement.main.style.height) >= 100 && parseFloat(queryElement.main.style.width) >= 300){
+            queryElement.main.style.height = parseFloat(queryElement.main.style.height) + e.movementY +'px';
+            queryElement.main.style.width = parseFloat(queryElement.main.style.width) + e.movementX +'px';
+        }
+            if(parseFloat(queryElement.main.style.width) < 301){
+                queryElement.main.style.width = 300+"px";
+            }
+            if(parseFloat(queryElement.main.style.height) < 101){
+                queryElement.main.style.height = 105+"px";
+            }
+        
+    };
     display = function(data){
         console.log(typeof(data));
         if(typeof(data) === "object"){
@@ -71,7 +150,7 @@ consoleJS = (function(){
 
         });
     }
-    return {
+        return {
         display : display,
     }
 })();
