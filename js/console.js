@@ -154,7 +154,3 @@ consoleJS = (function(){
         display : display,
     }
 })();
-
-function wow (){
-    console.log("WOW");
-}
