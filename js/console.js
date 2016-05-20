@@ -154,3 +154,8 @@ consoleJS = (function(){
         display : display,
     }
 })();
+
+function ame(){
+
+    console.log('aaaaame');
+}
